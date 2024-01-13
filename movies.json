@@ -1,0 +1,19 @@
+{
+  "movies": [
+    {
+      "title": "Avengers: Endgame",
+      "genre": "Action",
+      "releaseYear": 2019
+    },
+    {
+      "title": "The Shawshank Redemption",
+      "genre": "Drama",
+      "releaseYear": 1994
+    },
+    {
+      "title": "Inception",
+      "genre": "Sci-Fi",
+      "releaseYear": 2010
+    }
+  ]
+}
