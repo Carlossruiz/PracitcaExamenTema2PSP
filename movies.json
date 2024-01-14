@@ -1,19 +1,17 @@
-{
-  "movies": [
-    {
-      "title": "Avengers: Endgame",
-      "genre": "Action",
-      "releaseYear": 2019
-    },
-    {
-      "title": "The Shawshank Redemption",
-      "genre": "Drama",
-      "releaseYear": 1994
-    },
-    {
-      "title": "Inception",
-      "genre": "Sci-Fi",
-      "releaseYear": 2010
-    }
-  ]
-}
+[
+  {
+    "movieId": 1,
+    "title": "Pelicula 1",
+    "duration": "120 minutos"
+  },
+  {
+    "movieId": 2,
+    "title": "Pelicula 2",
+    "duration": "90 minutos"
+  },
+  {
+    "movieId": 3,
+    "title": "Pelicula 3",
+    "duration": "105 minutos"
+  }
+]

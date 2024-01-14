@@ -19,6 +19,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -34,8 +35,10 @@ public class LauncherClient {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static void main(String[] args) throws VideoclubException {
-		LauncherClient miLauncher = new LauncherClient();
-		miLauncher. uploadUsersPetition();;
+	    LauncherClient miLauncher = new LauncherClient();
+	    miLauncher.uploadMoviesPetition();
+	    miLauncher.uploadUsersPetition();
+	    //miLauncher.cancelBookingMovie(2); // Cambia el ID de la película según tus necesidades
 	}
 	
 
@@ -45,7 +48,7 @@ public class LauncherClient {
 	    HttpPost httpPost = new HttpPost("http://localhost:8080/videoclub/movies/upload");
 	    
 	  
-        String jsonFilePath = "C:\\Users\\Carlos\\eclipse-workspace\\practicaTema2PSP\\src\\main\\resources\\movies.json";
+        String jsonFilePath = "C:\\Users\\Carlos\\eclipse-workspace\\practicaTema2PSP\\movies.json";
         
         
         HttpEntity httpEntity = MultipartEntityBuilder.create().addBinaryBody("jsonFile", new File("movies.json"),ContentType.MULTIPART_FORM_DATA, "movies.json").build();
@@ -146,6 +149,39 @@ public class LauncherClient {
        	this.cerramosFlujos(httpClientRequest, httpServerResponse) ;
        }
 	      
+	}
+	private void cancelBookingMovie(int movieId) throws VideoclubException {
+	    CloseableHttpClient httpClientRequest = HttpClients.createDefault();
+	    HttpDelete httpDelete = new HttpDelete("http://localhost:8080/videoclub/booking/cancel/movie?movieId=" + movieId);
+	    CloseableHttpResponse httpServerResponse = null;
+	    String responseBody = null;
+	    try {
+	        httpServerResponse = httpClientRequest.execute(httpDelete);
+	        StatusLine statusLine = httpServerResponse.getStatusLine();
+	        if (statusLine.getStatusCode() != 200) {
+	            // Obtenemos el cuerpo del mensaje de error de la respuesta con el error
+	            responseBody = EntityUtils.toString(httpServerResponse.getEntity());
+	            // Generamos el mensaje de error
+	            String errorString = "(Endpoint /booking/cancel/movie) - El servidor ha devuelto un código de error (" + statusLine.getStatusCode() +
+	                    ") con la siguiente información: " + responseBody;
+	            // Lo incluimos en los logs y enviamos excepción
+	            LOGGER.error(errorString);
+	            throw new VideoclubException(6, errorString);
+	        }
+	        // Para conseguir la respuesta del servidor, hacemos un getEntity() que convertiremos a su vez en un string que contendrá el valor de respuesta
+	        responseBody = EntityUtils.toString(httpServerResponse.getEntity());
+	        // Mostramos por pantalla en los logs
+	        System.out.println("Respuesta del servidor: " + responseBody);
+	    } catch (IOException ioException) {
+	        // Generamos el mensaje de error
+	        String errorString = "(Endpoint /booking/cancel/movie) - Excepción mientras procesaba la llamada";
+	        // Lo incluimos en los logs y enviamos excepción
+	        LOGGER.error(errorString, ioException);
+	        throw new VideoclubException(400, errorString);
+	    } finally {
+	        // Cerramos los flujos abiertos de request y response
+	        this.cerramosFlujos(httpClientRequest, httpServerResponse);
+	    }
 	}
 	private void cerramosFlujos(CloseableHttpClient httpClientRequest, CloseableHttpResponse httpServerResponse) throws VideoclubException
 	{
